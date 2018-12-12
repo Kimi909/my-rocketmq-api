@@ -4,6 +4,7 @@ package com.kbp.quickstart;
 
 import com.kbp.constants.Const;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
@@ -24,11 +25,28 @@ public class Producer {
 					      "TagA",
 					      "key" + i ,
 					       ("Hello RocketMq" + i).getBytes()  );
-			SendResult status = producer.send(message);
-			System.err.println(status);
+			/*SendResult status = producer.send(message);
+			System.err.println(status);*/
+            if( i == 1){
+            	message.setDelayTimeLevel(3);
+			}
+
+			//异步发送消息
+			producer.send(message, new SendCallback() {
+				@Override
+				public void onSuccess(SendResult sendResult) {
+					System.out.println("msgid" + sendResult.getMsgId() + " ,status" + sendResult.getSendStatus());
+				}
+
+				@Override
+				public void onException(Throwable e) {
+                      e.printStackTrace();
+					System.err.println("--------发送失败");
+				}
+			});
 		}
 
-		producer.shutdown();
+		//producer.shutdown();
 
 	}
 }

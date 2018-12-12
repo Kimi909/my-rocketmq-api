@@ -17,7 +17,7 @@ public class Consumer1 {
 			String group_name = "test_model_consumer_name1";
 			DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(group_name);
 			consumer.setNamesrvAddr(Const.NAMESRV_ADDR_MASTER_SLAVE);
-			consumer.subscribe("test_model_topic2", "TagA");
+			consumer.subscribe("test_model_topic2", "TagA || TagB");
 			consumer.setMessageModel(MessageModel.CLUSTERING);
 			//consumer.setMessageModel(MessageModel.BROADCASTING);
 			consumer.registerMessageListener(new Listener());

@@ -4,9 +4,11 @@ package com.kbp.quickstart;
 
 import com.kbp.constants.Const;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageQueue;
 
 import java.util.List;
 
@@ -20,16 +22,26 @@ public class Producer {
 
 		producer.start();
 
-		for (int i = 0; i <2; i++) {
+		for (int i = 0; i <5; i++) {
 			Message message = new Message("test_quick_topic" ,
 					      "TagA",
 					      "key" + i ,
 					       ("Hello RocketMq" + i).getBytes()  );
 			/*SendResult status = producer.send(message);
 			System.err.println(status);*/
-            if( i == 1){
+           /* if( i == 1){
             	message.setDelayTimeLevel(3);
-			}
+			}*/
+
+            SendResult sr = producer.send(message, new MessageQueueSelector() {
+                @Override
+                public MessageQueue select(List<MessageQueue> mqs, Message message, Object arg) {
+
+                    Integer queuenumber = (Integer) arg;
+                    return mqs.get(queuenumber);
+                }
+            }, 2);
+            System.out.println(sr);
 
 			//异步发送消息
 			producer.send(message, new SendCallback() {

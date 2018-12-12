@@ -15,11 +15,11 @@ public class Producer {
 
 		DefaultMQProducer producer = new DefaultMQProducer("test_quick_producer_name");
 
-		producer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
+		producer.setNamesrvAddr(Const.NAMESRV_ADDR_MASTER_SLAVE);
 
 		producer.start();
 
-		for (int i = 0; i <5; i++) {
+		for (int i = 0; i <2; i++) {
 			Message message = new Message("test_quick_topic" ,
 					      "TagA",
 					      "key" + i ,
